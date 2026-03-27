@@ -86,7 +86,83 @@
         <h2 class="cta-title">Ready to take control?</h2>
         <p class="cta-body">Join thousands of people who track their expenses with Spendly.</p>
         <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
+        <button id="how-it-works-btn" class="btn-primary" type="button" style="background: var(--accent-2); border-color: var(--accent-2); font-size: 1rem; line-height: 1.5;">See how it works</button>
     </div>
 </section>
 
+<!-- Video modal -->
+<div id="video-modal" class="video-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="How it works video">
+    <div class="video-modal-backdrop"></div>
+    <div class="video-modal-box">
+        <button class="video-modal-close" id="video-modal-close" aria-label="Close">&times;</button>
+        <div class="video-modal-frame">
+            <iframe
+                id="video-iframe"
+                src=""
+                title="How Spendly works"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block head %}
+<style>
+    .video-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .video-modal.is-open {
+        display: flex;
+    }
+    .video-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 15, 15, 0.72);
+        backdrop-filter: blur(4px);
+    }
+    .video-modal-box {
+        position: relative;
+        z-index: 1;
+        width: min(860px, 92vw);
+        background: var(--paper-card);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+    }
+    .video-modal-close {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.9rem;
+        background: none;
+        border: none;
+        font-size: 1.75rem;
+        line-height: 1;
+        color: var(--ink-muted);
+        cursor: pointer;
+        z-index: 2;
+    }
+    .video-modal-close:hover {
+        color: var(--ink);
+    }
+    .video-modal-frame {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+    }
+    .video-modal-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
 {% endblock %}
