@@ -43,7 +43,7 @@ git commit -m "landing: add privacy policy page and route”
 
 I've attached a screenshot of the updated Spendly hero section design.
 
-Modify only the hero section in templates/landing.html and static/css/landing.css
+Modify only the hero section in templates/landing.html and @static/css/landing.css
 to match this image exactly. Do not touch any other part of the page.
 
 Changes to implement:
@@ -63,7 +63,7 @@ Add a modal to templates/landing.html that opens when the user clicks
 "See how it works".
 
 Requirements:
-
+- add "See how it works" button near to "create free account" button
 - Clicking "See how it works" opens a modal overlay
 - Modal contains an embedded YouTube video (use any placeholder YouTube URL
 for now, I will replace it later)
@@ -74,5 +74,9 @@ for now, I will replace it later)
 using any JS framework in this project
 
 Do not modify any other part of the page.
+
+- You placed "See how it works" button near to "Start tracking free" and "Sign in" buttons in same line.
+- I wanted that "See how it works" button exactly after "Create free account" button.
+- Change position of "See how it works" button only without impacting other functionalities.
 
 git commit -m "landing: add youtube modal on see how it works click”
