@@ -1,5 +1,59 @@
-# Students will write this file in Step 1 — Database Setup
-# This file should contain:
-#   get_db()   — returns a SQLite connection with row_factory and foreign keys enabled
-#   init_db()  — creates all tables using CREATE TABLE IF NOT EXISTS
-#   seed_db()  — inserts sample data for development
+import sqlite3
+import os
+
+DATABASE = os.path.join(os.path.dirname(__file__), '..', 'spendly.db')
+
+
+def get_db():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
+def init_db():
+    conn = get_db()
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS users (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            username      TEXT    NOT NULL UNIQUE,
+            email         TEXT    NOT NULL UNIQUE,
+            password_hash TEXT    NOT NULL,
+            created_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS expenses (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id     INTEGER NOT NULL,
+            amount      REAL    NOT NULL,
+            category    TEXT    NOT NULL,
+            description TEXT,
+            date        TEXT    NOT NULL,
+            created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+    """)
+    conn.commit()
+    conn.close()
+
+
+def seed_db():
+    conn = get_db()
+    conn.execute(
+        "INSERT OR IGNORE INTO users (username, email, password_hash) VALUES (?, ?, ?)",
+        ("demo", "demo@example.com", "hashed_password_placeholder")
+    )
+    conn.commit()
+
+    user = conn.execute("SELECT id FROM users WHERE username = ?", ("demo",)).fetchone()
+    sample_expenses = [
+        (user["id"], 12.50, "Food",      "Lunch",           "2026-04-01"),
+        (user["id"], 45.00, "Transport", "Monthly bus pass", "2026-04-02"),
+        (user["id"], 9.99,  "Utilities", "Streaming sub",   "2026-04-03"),
+    ]
+    conn.executemany(
+        "INSERT INTO expenses (user_id, amount, category, description, date) VALUES (?, ?, ?, ?, ?)",
+        sample_expenses
+    )
+    conn.commit()
+    conn.close()
