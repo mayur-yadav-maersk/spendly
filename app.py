@@ -1,7 +1,5 @@
 from flask import Flask, render_template
 
-from database.db import get_db, init_db, seed_db
-
 app = Flask(__name__)
 
 
@@ -30,12 +28,7 @@ def login():
 
 @app.route("/terms")
 def terms():
-    return render_template("terms.html")
-
-
-@app.route("/privacy")
-def privacy():
-    return render_template("privacy.html")
+    return render_template("1.html")
 
 
 @app.route("/logout")
@@ -64,5 +57,4 @@ def delete_expense(id):
 
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True, port=5001)
