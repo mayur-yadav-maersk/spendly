@@ -1,6 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from database.db import init_db, create_user, get_user_by_email, get_user_by_username
 
 app = Flask(__name__)
+app.secret_key = "spendly-dev-secret-key"
+
+init_db()
 
 
 # ------------------------------------------------------------------ #
@@ -12,13 +17,46 @@ def landing():
     return render_template("landing.html")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        if not name or not email or not password:
+            return render_template("register.html", error="All fields are required.")
+        if len(password) < 8:
+            return render_template("register.html", error="Password must be at least 8 characters.")
+        if get_user_by_email(email):
+            return render_template("register.html", error="An account with that email already exists.")
+        if get_user_by_username(name):
+            return render_template("register.html", error="That username is already taken.")
+
+        pw_hash = generate_password_hash(password)
+        create_user(name, email, pw_hash)
+        return redirect(url_for("login"))
+
     return render_template("register.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        if not email or not password:
+            return render_template("login.html", error="All fields are required.")
+
+        user = get_user_by_email(email)
+        if not user or not check_password_hash(user["password_hash"], password):
+            return render_template("login.html", error="Invalid email or password.")
+
+        session["user_id"] = user["id"]
+        session["username"] = user["username"]
+        return redirect(url_for("landing"))
+
     return render_template("login.html")
 
 
