@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="profile-section">
+    <div class="profile-inner">
+        <div class="profile-grid">
+
+            <!-- Left column -->
+            <div class="profile-left">
+
+                <!-- User info card -->
+                <div class="profile-card user-card">
+                    <div class="avatar">{{ user.username[0].upper() }}</div>
+                    <h2 class="user-name">{{ user.username }}</h2>
+                    <p class="user-email">{{ user.email }}</p>
+                    <p class="user-since">Member since {{ user.member_since }}</p>
+                </div>
+
+                <!-- Summary stats -->
+                <div class="stats-row">
+                    <div class="stat-tile">
+                        <span class="stat-value">{{ stats.total_spent }}</span>
+                        <span class="stat-label">Total Spent</span>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="stat-value">{{ stats.transaction_count }}</span>
+                        <span class="stat-label">Transactions</span>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="stat-value">{{ stats.top_category }}</span>
+                        <span class="stat-label">Top Category</span>
+                    </div>
+                </div>
+
+                <!-- Category breakdown -->
+                <div class="profile-card">
+                    <h3 class="card-title">Category Breakdown</h3>
+                    {% for cat in categories %}
+                    <div class="cat-row">
+                        <span class="cat-name">{{ cat.name }}</span>
+                        <div class="cat-bar-track">
+                            <div class="cat-bar badge-{{ cat.name | lower }}-bar" style="width: {{ cat.percent }}%"></div>
+                        </div>
+                        <span class="cat-amount">{{ cat.amount }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <!-- Right column: transactions -->
+            <div class="profile-right">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Transactions</h3>
+                        <a href="#" class="btn-ghost btn-sm">+ Add Expense</a>
+                    </div>
+                    <table class="tx-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th class="tx-amount-col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tx in transactions %}
+                            <tr>
+                                <td class="tx-date">{{ tx.date }}</td>
+                                <td class="tx-desc">{{ tx.description }}</td>
+                                <td>
+                                    <span class="category-badge badge-{{ tx.category | lower }}">
+                                        {{ tx.category }}
+                                    </span>
+                                </td>
+                                <td class="tx-amount">{{ tx.amount }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
